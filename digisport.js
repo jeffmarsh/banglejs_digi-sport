@@ -1,16 +1,4 @@
-
-
-// drawWidgets() is added by bootloader.js when loading a clock app, but when you upload via the IDE it just
-// resets the watch and skips out running bootloader.js completely. So add the relevant code from the bootloader.
-var WIDGETPOS={tl:32,tr:g.getWidth()-32,bl:32,br:g.getWidth()-32};
-var WIDGETS={};
-function drawWidgets() { for (var w of WIDGETS) w.draw(); }
-
 require("FontCopasetic40x58Numeric").add(Graphics);
-require("Storage").list().filter(a=>a[0]=='=').forEach(
-  widget=>eval(require("Storage").read(widget)));
-setTimeout(drawWidgets,100);
-
 // Example application code
 // Taken from https://github.com/espruino/BangleApps/blob/master/apps/sclock/clock-simple.js
 
@@ -19,7 +7,6 @@ setTimeout(drawWidgets,100);
 // https://github.com/jumjum123/Bangle/blob/master/modules/BangleChart.js
 // Many thanks to the people the wrote it, you should really check it out.
 */
-(function() {
     function bangleChart(){
       var radarIv;
       function init(){
@@ -111,7 +98,7 @@ setTimeout(drawWidgets,100);
       var circleRadius = 30;
       var bgcolor = "#3d3d3d";
       var fgcolor = "#ff9d00";
-      batteryLevel=90; // temporary battery level until I start testing on the device
+      //batteryLevel=90; // temporary battery level until I start testing on the device
       g.clear();
       g.setFontAlign(0,0); // center font
       g.setFontVector(20);
@@ -138,21 +125,21 @@ setTimeout(drawWidgets,100);
       g.drawString(mm,150,160);
     }
 
-    // handle switch display on by pressing BTN1
     Bangle.on('lcdPower', function(on) {
         if (on) {
             drawWidgets();
             checkTime();
         }
     });
-
-    // clean app screen
     g.clear();
+    Bangle.loadWidgets();
+    Bangle.drawWidgets();
 
-    // refesh every 15 sec
     setInterval(checkTime, 15E3);
-
-    // draw now
     checkTime();
 
-})();
+    setWatch(Bangle.showLauncher, BTN2, {repeat:false,edge:"falling"});
+
+/*
+require("Storage").write("digisport.info",{"id":"digisport","name":"DigiSport","type":"clock","src":"digisport.app.js","icon":"digisport.img","sortorder":-10,"version":"0.02","files":"digisport.info,digisport.app.js,digisport.img"});
+*/
